@@ -1,0 +1,12 @@
+{
+    "name": "jdecano/elastic-import",
+    "authors": [
+        {
+            "name": "JOhn Dave Decano",
+            "email": "johndavedecano@gmail.com"
+        }
+    ],
+    "require": {
+        "fzaninotto/faker": "^1.5"
+    }
+}
