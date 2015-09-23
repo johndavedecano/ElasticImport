@@ -1,0 +1,121 @@
+{
+    "mappings": {
+        "teams": {
+            "properties": {
+                "browser": {
+                     "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "long"
+                },
+                "handling_time": {
+                    "type": "long"
+                },
+                "session_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "team_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"
+                },
+                "team_name": {
+                    "type": "string"
+                },
+                "wait_time": {
+                    "type": "long"
+                }
+            }   
+        },
+        "visitor": {
+            "properties": {
+                "created_at": {
+                    "type": "long"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "session_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                "state": {
+                    "type": "long"
+                }
+            }
+        },
+        "sessions": {
+            "properties": {
+                "browser": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "long"
+                },
+                "handling_time": {
+                    "type": "long"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "wait_time": {
+                    "type": "long"
+                }
+            }
+        },
+        "agents": {
+            "properties": {
+                "agent_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"   
+                },
+                "agent_name": {
+                    "type": "string"
+                },
+                "browser": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "long"
+                },
+                "handling_time": {
+                    "type": "long"
+                },
+                "session_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                 "state": {
+                    "type": "string"
+                },
+                "wait_time": {
+                    "type": "long"
+                }
+            }   
+        }
+    }
+}

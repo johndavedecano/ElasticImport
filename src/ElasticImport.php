@@ -8,7 +8,7 @@ class ElasticImport {
 	 * [$api description]
 	 * @var string
 	 */
-	private $api = 'http://192.168.76.100:9200';
+	private $api = 'http://localhost:9200';
 	/**
 	 * [$organization description]
 	 * @var string
@@ -31,8 +31,7 @@ class ElasticImport {
 	 * @var [type]
 	 */
 	private $teams = [
-		['id' => '7e57d004-2b93-0e7a-b45f-5387367f91cx', 'name' => 'Technical Support'],
-		['id' => '7e57d004-2b97-0e73-b45f-5387f67791cf', 'name' => 'Customer Service'],
+		['id' => 'team1', 'name' => 'Technical Team'],
 		['id' => '7e53dd04-2b97-0e7a-b45f-53f7367791cd', 'name' => 'Retention Department']
 	];
 	/**
@@ -40,9 +39,9 @@ class ElasticImport {
 	 * @var [type]
 	 */
 	private $agents = [
-		['id' => '7e57d004-2b93-0e7a-b45f-5387367791cx', 'name' => 'Paulo Marinas'],
-		['id' => '7e57d004-2b97-0e73-b45f-5387367791cf', 'name' => 'Nikki Bryan'],
-		['id' => '7e53dd04-2b97-0e7a-b45f-5387367791cd', 'name' => 'Efren Corpuz']
+		['id' => '28fd3cf4-cde7-4550-a384-dc3415ee23e7', 'name' => 'Paulo Marinas'],
+		['id' => '89bbacad-e1d7-4b54-9b25-f4470152a2b2', 'name' => 'Nikki Bryan'],
+		['id' => 'b11b92c6-cdb8-488b-925c-0a0651b1b5b3', 'name' => 'Dave Decano']
 	];
 	/**
 	 * [$browsers description]
@@ -50,32 +49,71 @@ class ElasticImport {
 	 */
 	private $browsers = ['Internet Explorer', 'Firefox', 'Chrome', 'Safari', 'Opera'];
 	/**
+	 * @param  string $host
+	 * @return mixed
+	 */
+	public function setHost($host = 'http://localhost:9200') {
+		$this->api = $host;
+	}
+	/**
+	 * @param  string $contents
+	 * @return mixed
+	 */
+	public function purge() {
+		$url = $this->api.'/_flush';
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$response  = curl_exec($ch);
+		curl_close($ch);
+	}
+	/**
+	 * @param  string $contents
+	 * @return mixed
+	 */
+	public function generateMappings($contents) {
+		$url = $this->api.'/'.$this->organization;
+		$data_json = $contents;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json','Content-Length: ' . strlen($data_json)));
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+		curl_setopt($ch, CURLOPT_POSTFIELDS,$data_json);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		$response  = curl_exec($ch);
+		curl_close($ch);
+	}
+	/**
 	 * @param  integer $limit
 	 * @return [type]
 	 */
 	public function generateSessions($limit = 1) {
 		$range = range(0, $limit);
 		$faker = \Faker\Factory::create();
+		$dates = range(1, 60);
 		foreach ($range as $index) {
 			$place = $this->places[rand(0,5)];
-			$created_at = $faker->unixTime() * 1000;
+			$created_at = strtotime("now - ".$dates[rand(0,59)]."days") * 1000;
 			$session_id = $faker->uuid;
+			$rating = rand(0,3);
 			$data = [
 				"wait_time"     => rand(60, 1200),
 				"handling_time" => rand(60, 1200),
 				"city"          => $place['city'],
 				"state"         => $place['state'],
 				"country"       => $place['country'],
+				"rating"        => $rating,
 				"browser"       => $this->browsers[rand(0, 4)],
 				"created_at"    => $created_at
 			];
 			$this->request('sessions', $session_id, $data);
-			$this->generateTeam($session_id, $data);
-			$this->generateAgent($session_id, $data);
-			$this->generateVisitor($session_id, $created_at);
+			$this->generateTeam($session_id, $data, $rating);
+			$this->generateAgent($session_id, $data, $rating);
+			$this->generateVisitor($session_id, $created_at, $rating);
 		}
 	}
-	public function generateAgent($session_id, $data) {
+	public function generateAgent($session_id, $data, $rating) {
 		$agent = $this->agents[rand(0,2)];
 		$data = [
 			"agent_id"      => $agent['id'],
@@ -88,12 +126,13 @@ class ElasticImport {
 			"country"       => $data['country'],
 			"browser"       => $data['browser'],
 			"created_at"    => $data['created_at'],
+			"rating"        => $rating,
 		];
 		$faker = \Faker\Factory::create();
 		$this->request('agents', $faker->uuid, $data);
 	}
-	public function generateTeam($session_id, $data) {
-		$team = $this->teams[rand(0,2)];
+	public function generateTeam($session_id, $data, $rating) {
+		$team = $this->teams[rand(0,1)];
 		$data = [
 			"team_id"       => $team['id'],
 			"team_name"     => $team['name'],
@@ -105,6 +144,7 @@ class ElasticImport {
 			"country"       => $data['country'],
 			"browser"       => $data['browser'],
 			"created_at"    => $data['created_at'],
+			"rating"        => $rating,
 		];
 		$faker = \Faker\Factory::create();
 		$this->request('teams', $faker->uuid, $data);
@@ -114,14 +154,15 @@ class ElasticImport {
 	 * @param  [type] $created_at
 	 * @return [type]
 	 */
-	public function generateVisitor($session_id, $created_at) {
+	public function generateVisitor($session_id, $created_at, $rating) {
 		$faker = \Faker\Factory::create();
 		$data = [
-			"name" => $faker->name,
-			"email" => $faker->email,
-			"state" => 4,
+			"name"       => $faker->name,
+			"email"      => $faker->email,
+			"state"      => 4,
 			"session_id" => $session_id,
-			"created_at" => $created_at
+			"created_at" => $created_at,
+			"rating"     => $rating,
 		];
 		$this->request('visitor', $faker->uuid, $data);
 	}

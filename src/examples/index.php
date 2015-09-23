@@ -5,5 +5,10 @@ require_once __DIR__.'/../ElasticImport.php';
 // Second is limit
 set_time_limit(0);
 $importer = new Jdecano\ElasticImport();
-$importer->generateSessions(500);
+$importer->purge();
+if (isset($_GET['host'])) {
+	$importer->setHost(strip_tags($_GET['host']));
+}
+$importer->generateMappings(file_get_contents(__DIR__.'/mappings.json'));
+$importer->generateSessions(100);
 echo "Done";
