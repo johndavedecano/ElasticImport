@@ -34,12 +34,12 @@ class ElasticImport {
 	 * @var [type]
 	 */
 	private $places = [
-		["country" => "Canada", "state" =>"Ontario", "city" => "Toronto"],
-		["country" => "Philippines", "state" =>"Manila", "city" => "Pasig"],
-		["country" => "Philippines", "state" =>"Manila", "city" => "Quezon City"],
-		["country" => "United States", "state" =>"California", "city" => "Los Angeles"],
-		["country" => "United States", "state" =>"California", "city" => "Sacramento"],
-		["country" => "Japan", "state" =>"Tokyo", "city" => "Tokyo"]
+		["country" => "CA", "state" =>"Ontario", "city" => "Toronto"],
+		["country" => "PH", "state" =>"Manila", "city" => "Pasig"],
+		["country" => "PH", "state" =>"Manila", "city" => "Quezon City"],
+		["country" => "US", "state" =>"California", "city" => "Los Angeles"],
+		["country" => "US", "state" =>"California", "city" => "Sacramento"],
+		["country" => "JP", "state" =>"Tokyo", "city" => "Tokyo"]
 	];
 	/**
 	 * [$teams description]
