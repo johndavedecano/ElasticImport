@@ -113,23 +113,29 @@ class ElasticImport {
 			$session_id = $faker->uuid;
 			$rating = rand(0,3);
 			$team = $this->teams[rand(0,1)];
-			$data = [
-				"wait_time"     => rand(60, 1200),
-				"handling_time" => rand(60, 1200),
-				"city"          => $place['city'],
-				"state"         => $place['state'],
-				"country"       => $place['country'],
+			$ua = [
 				"os"            => $this->os[rand(0,2)],
 				"device"        => $this->devices[rand(0,1)],
 				'engine'        => $this->engines[rand(0,7)],
-				"rating"        => $rating,
 				"browser"       => $this->browsers[rand(0, 4)],
+			];
+			$geoip = [
+				"city"          => $place['city'],
+				"state"         => $place['state'],
+				"country"       => $place['country'],
+			];
+			$data = [
+				"wait_time"     => rand(60, 1200),
+				"handling_time" => rand(60, 1200),
+				"rating"        => $rating,
 				"created_at"    => $created_at
 			];
+			$data = array_merge($data, $ua);
+			$data = array_merge($data, $geoip);
 			$this->request('sessions', $session_id, $data);
 			$this->generateTeam($session_id, $data, $rating, $team);
 			$this->generateAgent($session_id, $data, $rating, $team);
-			$this->generateVisitor($session_id, $created_at, $rating);
+			$this->generateVisitor($session_id, $created_at, $rating, $geoip, $ua);
 		}
 	}
 	public function generateAgent($session_id, $data, $rating, $team) {
@@ -174,7 +180,7 @@ class ElasticImport {
 	 * @param  [type] $created_at
 	 * @return [type]
 	 */
-	public function generateVisitor($session_id, $created_at, $rating) {
+	public function generateVisitor($session_id, $created_at, $rating, $geoip,  $ua) {
 		$faker = \Faker\Factory::create();
 		$data = [
 			"name"       => $faker->name,
@@ -182,7 +188,9 @@ class ElasticImport {
 			"state"      => 4,
 			"session_id" => $session_id,
 			"created_at" => $created_at,
-			"rating"     => $rating,
+			"ua"         => $ua,
+			"geoip"      => $geoip,
+			"rating"     => $rating
 		];
 		$this->request('visitor', $faker->uuid, $data);
 	}
