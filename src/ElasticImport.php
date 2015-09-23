@@ -15,6 +15,21 @@ class ElasticImport {
 	 */
 	private $organization = "5e00f1b9-82c7-4190-b080-3fb8c93d123d";
 	/**
+	 * [$devices description]
+	 * @var [type]
+	 */
+	private $devices = ['Other', 'Mobile'];
+	/**
+	 * [$os description]
+	 * @var [type]
+	 */
+	private $os = ['Linux', 'Windows', 'Android'];
+	/**
+	 * [$engines description]
+	 * @var [type]
+	 */
+	private $engines = ['AppleWebKit','WebKit','Blink','Trident','Gecko','KHTML','NetFront','Edge'];
+	/**
 	 * [$places description]
 	 * @var [type]
 	 */
@@ -97,25 +112,31 @@ class ElasticImport {
 			$created_at = strtotime("now - ".$dates[rand(0,59)]."days") * 1000;
 			$session_id = $faker->uuid;
 			$rating = rand(0,3);
+			$team = $this->teams[rand(0,1)];
 			$data = [
 				"wait_time"     => rand(60, 1200),
 				"handling_time" => rand(60, 1200),
 				"city"          => $place['city'],
 				"state"         => $place['state'],
 				"country"       => $place['country'],
+				"os"            => $this->os[rand(0,2)],
+				"device"        => $this->devices[rand(0,1)],
+				'engine'        => $this->engines[rand(0,7)],
 				"rating"        => $rating,
 				"browser"       => $this->browsers[rand(0, 4)],
 				"created_at"    => $created_at
 			];
 			$this->request('sessions', $session_id, $data);
-			$this->generateTeam($session_id, $data, $rating);
-			$this->generateAgent($session_id, $data, $rating);
+			$this->generateTeam($session_id, $data, $rating, $team);
+			$this->generateAgent($session_id, $data, $rating, $team);
 			$this->generateVisitor($session_id, $created_at, $rating);
 		}
 	}
-	public function generateAgent($session_id, $data, $rating) {
+	public function generateAgent($session_id, $data, $rating, $team) {
 		$agent = $this->agents[rand(0,2)];
 		$data = [
+			"team_id"       => $team['id'],
+			"team_name"     => $team['name'],
 			"agent_id"      => $agent['id'],
 			"agent_name"    => $agent['name'],
 			"session_id"    => $session_id,
@@ -131,8 +152,7 @@ class ElasticImport {
 		$faker = \Faker\Factory::create();
 		$this->request('agents', $faker->uuid, $data);
 	}
-	public function generateTeam($session_id, $data, $rating) {
-		$team = $this->teams[rand(0,1)];
+	public function generateTeam($session_id, $data, $rating, $team) {
 		$data = [
 			"team_id"       => $team['id'],
 			"team_name"     => $team['name'],
