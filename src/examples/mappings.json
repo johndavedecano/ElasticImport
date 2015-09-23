@@ -38,6 +38,46 @@
         },
         "visitor": {
             "properties": {
+                "phone": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                "rating": {
+                    "type": "long"
+                },
+                "longitude": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                "latitude": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                "zipcode": {
+                    "type": "string",
+                    "index" : "not_analyzed"  
+                },
+                "os": {
+                    "type": "string"
+                },
+                "device": {
+                    "type": "string"
+                },
+                "engine": {
+                    "type": "string"
+                },
+                "browser": {
+                    "type": "string"
+                },
+                "city": {
+                    "type": "string"
+                },
+                "state": {
+                    "type": "string"
+                },
+                "country": {
+                    "type": "string"
+                },
                 "created_at": {
                     "type": "long"
                 },
@@ -51,7 +91,7 @@
                     "type": "string",
                     "index" : "not_analyzed"  
                 },
-                "state": {
+                "visitor_state": {
                     "type": "long"
                 }
             }

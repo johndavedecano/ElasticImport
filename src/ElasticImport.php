@@ -106,10 +106,10 @@ class ElasticImport {
 	public function generateSessions($limit = 1) {
 		$range = range(0, $limit);
 		$faker = \Faker\Factory::create();
-		$dates = range(1, 60);
+		$dates = range(1, 30);
 		foreach ($range as $index) {
 			$place = $this->places[rand(0,5)];
-			$created_at = strtotime("now - ".$dates[rand(0,59)]."days") * 1000;
+			$created_at = strtotime("now - ".$dates[rand(0,29)]."days") * 1000;
 			$session_id = $faker->uuid;
 			$rating = rand(0,3);
 			$team = $this->teams[rand(0,1)];
@@ -185,13 +185,17 @@ class ElasticImport {
 		$data = [
 			"name"       => $faker->name,
 			"email"      => $faker->email,
-			"state"      => 4,
+			"phone"      => $faker->phoneNumber,
+			"visitor_state"  => 4,
 			"session_id" => $session_id,
 			"created_at" => $created_at,
-			"ua"         => $ua,
-			"geoip"      => $geoip,
-			"rating"     => $rating
+			"rating"     => $rating,
+			"longitude"  => $faker->longitude,
+			"latitude"   => $faker->latitude,
+			"zipcode"    => $faker->postcode
 		];
+		$data = array_merge($data, $ua);
+		$data = array_merge($data, $geoip);
 		$this->request('visitor', $faker->uuid, $data);
 	}
 	/**
