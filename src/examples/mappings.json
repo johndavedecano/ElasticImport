@@ -38,11 +38,31 @@
         },
         "visitor": {
             "properties": {
+                "agent_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"   
+                },
+                "agent_name": {
+                    "type": "string"
+                },
+                "initial": {
+                    "type": "string"
+                },
+                "avatar": {
+                    "type": "string",
+                    "index" : "not_analyzed"   
+                },
                 "phone": {
                     "type": "string",
                     "index" : "not_analyzed"  
                 },
                 "rating": {
+                    "type": "long"
+                },
+                "last_message": {
+                    "type": "string"
+                },
+                "last_message_at": {
                     "type": "long"
                 },
                 "longitude": {

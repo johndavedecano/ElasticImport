@@ -113,6 +113,7 @@ class ElasticImport {
 			$session_id = $faker->uuid;
 			$rating = rand(0,3);
 			$team = $this->teams[rand(0,1)];
+			$agent = $this->agents[rand(0,2)];
 			$ua = [
 				"os"            => $this->os[rand(0,2)],
 				"device"        => $this->devices[rand(0,1)],
@@ -134,17 +135,17 @@ class ElasticImport {
 			$data = array_merge($data, $geoip);
 			$this->request('sessions', $session_id, $data);
 			$this->generateTeam($session_id, $data, $rating, $team);
-			$this->generateAgent($session_id, $data, $rating, $team);
-			$this->generateVisitor($session_id, $created_at, $rating, $geoip, $ua);
+			$this->generateAgent($session_id, $data, $rating, $team, $agent);
+			$this->generateVisitor($session_id, $created_at, $rating, $geoip, $ua, $agent);
 		}
 	}
-	public function generateAgent($session_id, $data, $rating, $team) {
-		$agent = $this->agents[rand(0,2)];
+	public function generateAgent($session_id, $data, $rating, $team, $agent) {
 		$data = [
 			"team_id"       => $team['id'],
 			"team_name"     => $team['name'],
 			"agent_id"      => $agent['id'],
 			"agent_name"    => $agent['name'],
+			"avatar"        => "",
 			"session_id"    => $session_id,
 			"wait_time"     => $data['wait_time'],
 			"handling_time" => $data['handling_time'],
@@ -180,15 +181,22 @@ class ElasticImport {
 	 * @param  [type] $created_at
 	 * @return [type]
 	 */
-	public function generateVisitor($session_id, $created_at, $rating, $geoip,  $ua) {
+	public function generateVisitor($session_id, $created_at, $rating, $geoip,  $ua, $agent) {
 		$faker = \Faker\Factory::create();
+		$name = $faker->name;
 		$data = [
-			"name"       => $faker->name,
+			"agent_id"      => $agent['id'],
+			"agent_name"    => $agent['name'],
+			"name"       => $name,
+			"avatar"     => "",
+			"initial"    => strtoupper($name[0]),
 			"email"      => $faker->email,
 			"phone"      => $faker->phoneNumber,
 			"visitor_state"  => 4,
 			"session_id" => $session_id,
 			"created_at" => $created_at,
+			"last_message" => "Hi Arthur, I'm looking for a blue shirt",
+			"last_message_at" => $created_at - (86400 * 1000),
 			"rating"     => $rating,
 			"longitude"  => $faker->longitude,
 			"latitude"   => $faker->latitude,
