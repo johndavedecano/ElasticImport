@@ -12,7 +12,8 @@
                     "type": "string"
                 },
                 "created_at": {
-                    "type": "long"
+                    "type": "long",
+                    "index" : "not_analyzed"
                 },
                 "handling_time": {
                     "type": "long"
@@ -43,6 +44,13 @@
                     "index" : "not_analyzed"   
                 },
                 "agent_name": {
+                    "type": "string"
+                },
+                "visitor_id": {
+                    "type": "string",
+                    "index" : "not_analyzed"
+                },
+                "visitor_name": {
                     "type": "string"
                 },
                 "initial": {
@@ -99,7 +107,8 @@
                     "type": "string"
                 },
                 "created_at": {
-                    "type": "long"
+                    "type": "long",
+                    "index" : "not_analyzed"
                 },
                 "email": {
                     "type": "string"
@@ -128,7 +137,8 @@
                     "type": "string"
                 },
                 "created_at": {
-                    "type": "long"
+                    "type": "long",
+                    "index" : "not_analyzed"
                 },
                 "handling_time": {
                     "type": "long"
@@ -160,7 +170,8 @@
                     "type": "string"
                 },
                 "created_at": {
-                    "type": "long"
+                    "type": "long",
+                    "index" : "not_analyzed"
                 },
                 "handling_time": {
                     "type": "long"

@@ -195,6 +195,7 @@ class ElasticImport {
 			"visitor_state"  => 4,
 			"session_id" => $session_id,
 			"created_at" => $created_at,
+			"ip_address" => "203.82.34.242",
 			"last_message" => "Hi Arthur, I'm looking for a blue shirt",
 			"last_message_at" => $created_at - (86400 * 1000),
 			"rating"     => $rating,
